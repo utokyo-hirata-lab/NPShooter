@@ -1,0 +1,1301 @@
+from pydoc import cli
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as pat
+from mpl_toolkits.mplot3d import Axes3D
+import mpl_toolkits.mplot3d.art3d as art3d
+from numpy.core.arrayprint import dtype_is_implied
+from numpy.lib.twodim_base import tri
+import pandas as pd
+import tkinter as tk
+from tkinter import ttk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import csv
+import pathlib
+from tkinter import messagebox
+import tkinter.simpledialog as simpledialog
+import tkinter.filedialog
+import pickle
+import os
+from tkinter import colorchooser
+import sys
+import glob
+import re
+from scipy.stats import f
+from scipy import interpolate
+import scipy.optimize
+import math
+
+#アプリ化する時に下のやつに書き換える
+f_binary=open("c:/python/elementlist.binaryfile","rb")
+element_list = pickle.load(f_binary)
+#print(element_list)
+#アプリの絶対パスを取得してバイナリファイルを開く　elementlist.binaryfileをアプリ化したファイルに入れること！
+#this_file = os.path.abspath("myapp.exe") #←アプリ名決まったら書き換える exeファイルは個々の名前と同じにする アプリ化の際pythonfileの名前も変えないと後からいじれない
+#this_folder = this_file.replace("myapp.exe","")
+#f = open("{}elementlist.binaryfile".format(this_folder),"rb")
+#element_list = pickle.load(f)
+
+#ソフトの色とフォント変えるところ
+color1 = "#c1e0ff" #背景
+color2 = "#ffd6ea" #入力部分
+color3 = "#b7ffb7" #元素組成グラフ
+color4 = "#ffd6ad" #元素比グラフ
+color5 = "#c6c6ff" #組成分類グラフ
+"""
+color6="#ffbcff" #カウントグラフ背景
+color7="#ffffc1" #新しいウィンドウ背景
+color8="#ccffe5" #頂点編集するウィンドウ背景
+"""
+b_color1 = "#ffffea" #参照
+b_color2 = "#eaffff" #数値
+b_color3 = "#fff4ea" #元素名
+b_color4 = "#eaeaff" #任意
+
+label_font="Calibri"
+label_font_jp="BIZ UDPゴシック"
+
+#設定で変えられるものの初期値
+color_fig="white"
+color_axes_pre="white"#グラフ表示していない状態での軸とかの色
+color_axes="black"#グラフ表示時の軸とかの色
+graph_font="Arial"#グラフのフォント
+color_plot_1="#4f4f4f"#プロットの色 元素組成
+color_plot_2="blue"#プロットの色　元素比
+alpha_plot_1=0.2 #プロットの透明度(0-1) 元素組成
+alpha_plot_2=0.5 #プロットの透明度(0-1) 元素比
+color_bar="green"#棒グラフの色
+bar_style="枠あり"#棒グラフの見た目 周り囲うかどうか
+weight_font="bold"
+size_plot=35 #プロットのサイズ
+
+plt.rcParams["font.weight"] = weight_font #今は変えられない　変えられるようにするならフォントみたいにグラフかく関数それぞれに入れる
+plt.rcParams["axes.linewidth"] = 1.5
+plt.rcParams["axes.labelsize"] = 16
+plt.rcParams["xtick.labelsize"] = 15
+plt.rcParams["ytick.labelsize"] = 14
+plt.rcParams["xtick.direction"] = "out"
+plt.rcParams["ytick.direction"] = "out"
+plt.rcParams["xtick.major.size"] = 5
+plt.rcParams["ytick.major.size"] = 5
+plt.rcParams["xtick.major.pad"] = 2
+plt.rcParams["ytick.major.pad"] = 2
+plt.rcParams["xtick.major.width"] = 1.5
+plt.rcParams["ytick.major.width"] = 1.5
+
+data_ex = 0
+iso_sort = 0
+
+root=tk.Tk()
+root.title(u"NP Shooter 2")
+root.geometry("1850x980")
+root.configure(bg=color1)
+def doSomething():
+    ret = messagebox.askyesno("確認","ウィンドウを閉じますか？")
+    if ret == True:
+        root.quit()
+        sys.exit()
+root.protocol('WM_DELETE_WINDOW', doSomething)
+
+frame1 = tk.Canvas(root,width=305,height=140,bg=color2)
+frame1.place(x=18,y=18)
+frame2 = tk.Canvas(root,width=305,height=125,bg=color2)
+frame2.place(x=18,y=168)
+
+textframe1 = tk.Frame(root,width=150,height=35,bg=color2)
+textframe1.place(x=120,y=30)
+textBox1_1 = tk.Entry(textframe1,bg=b_color1)
+textBox1_1.place(width=145,height=20,x=0,y=0)
+scrollbar = tk.Scrollbar(textframe1,command=textBox1_1.xview,orient=tk.HORIZONTAL)
+scrollbar.place(width=145,height=12,x=0,y=22)
+textBox1_1["xscrollcommand"]=scrollbar.set
+
+textframe2 = tk.Frame(root,width=150,height=35,bg=color2)
+textframe2.place(x=120,y=75)
+textBox1_2 = tk.Entry(textframe2,bg=b_color1)
+textBox1_2.place(width=145,height=20,x=0,y=0)
+scrollbar = tk.Scrollbar(textframe2,command=textBox1_2.xview,orient=tk.HORIZONTAL)
+scrollbar.place(width=145,height=12,x=0,y=22)
+textBox1_2["xscrollcommand"]=scrollbar.set
+
+textBox2 = tk.Entry(root,bg=b_color2)
+textBox2.place(width=80,height=20,x=140,y=185)
+
+frame3 = tk.Canvas(root,width=1400,height=450,bg=color3)
+frame3.place(x=341,y=18)
+frame4 = tk.Canvas(root,width=652,height=450,bg=color4)
+frame4.place(x=341,y=486)
+frame5 = tk.Canvas(root,width=730,height=450,bg=color5)
+frame5.place(x=1011,y=486)
+
+fig3 = plt.figure(figsize=(13.81,4.325))
+fig3.subplots_adjust(bottom=0.2,left=0.16)
+ax3 = fig3.add_subplot(111)
+ax3.spines['top'].set_color("w")
+ax3.spines['bottom'].set_color("w")
+ax3.spines['left'].set_color("w")
+ax3.spines['right'].set_color("w")
+ax3.tick_params(colors="w")
+canvas3 = FigureCanvasTkAgg(fig3,master=root)
+canvas3.get_tk_widget().place(x=352,y=29)
+canvas3._tkcanvas.place(x=352,y=29)
+
+fig4 = plt.figure(figsize=(6.34,4.325))
+fig4.subplots_adjust(bottom=0.2,left=0.16)
+ax4 = fig4.add_subplot(111)
+ax4.spines['top'].set_color("w")
+ax4.spines['bottom'].set_color("w")
+ax4.spines['left'].set_color("w")
+ax4.spines['right'].set_color("w")
+ax4.tick_params(colors="w")
+canvas4=FigureCanvasTkAgg(fig4,master=root)
+canvas4.get_tk_widget().place(x=352,y=497)
+canvas4._tkcanvas.place(x=352,y=497)
+
+fig5 = plt.figure(figsize=(7.11,4.325))
+fig5.subplots_adjust(bottom=0.2,left=0.16)
+ax5 = fig5.add_subplot(111)
+ax5.spines['top'].set_color("w")
+ax5.spines['bottom'].set_color("w")
+ax5.spines['left'].set_color("w")
+ax5.spines['right'].set_color("w")
+ax5.tick_params(colors="w")
+canvas5=FigureCanvasTkAgg(fig5,master=root)
+canvas5.get_tk_widget().place(x=1022,y=497)
+canvas5._tkcanvas.place(x=1022,y=497)
+
+frame6 = tk.Canvas(root,width=71,height=25,bg=color3)
+frame6.place(x=18,y=320)
+
+bln1 = tkinter.BooleanVar()
+check1 = tk.Checkbutton(root,variable=bln1,text="縦軸を対数表示にする",font=(label_font_jp,9),bg=color1)
+check1.place(x=40,y=360)
+textBox3_1 = tk.Entry(root,bg=b_color3)
+textBox3_1.place(width=30,height=20,x=40,y=390)
+textBox3_2 = tk.Entry(root,bg=b_color2)
+textBox3_2.place(width=50,height=20,x=90,y=390)
+textBox3_3 = tk.Entry(root,bg=b_color2)
+textBox3_3.place(width=50,height=20,x=160,y=390)
+
+frame7 = tk.Canvas(root,width=71,height=25,bg=color4)
+frame7.place(x=18,y=465)
+
+textBox4_1 = tk.Entry(root,bg=b_color3)
+textBox4_1.place(width=75,height=20,x=40,y=508)
+textBox5_1 = tk.Entry(root,bg=b_color3)
+textBox5_1.place(width=75,height=20,x=135,y=508)
+textBox4_2 = tk.Entry(root,bg=b_color3)
+textBox4_2.place(width=75,height=20,x=40,y=538)
+textBox5_2 = tk.Entry(root,bg=b_color3)
+textBox5_2.place(width=75,height=20,x=135,y=538)
+
+frame8 = tk.Canvas(root,width=71,height=25,bg=color5)
+frame8.place(x=18,y=612)
+
+textBox6_1 = tk.Entry(root,bg=b_color4)
+textBox6_1.place(width=75,height=20,x=50,y=655)
+textBox7_1 = tk.Entry(root,bg=b_color3)
+textBox7_1.place(width=75,height=20,x=145,y=655)
+textBox8_1 = tk.Entry(root,bg=b_color3)
+textBox8_1.place(width=75,height=20,x=240,y=655)
+textBox9_1 = tk.Entry(root,bg=b_color2)
+textBox9_1.place(width=50,height=20,x=70,y=685)
+textBox10_1 = tk.Entry(root,bg=b_color2)
+textBox10_1.place(width=50,height=20,x=140,y=685)
+textBox6_2 = tk.Entry(root,bg=b_color4)
+textBox6_2.place(width=75,height=20,x=50,y=735)
+textBox7_2 = tk.Entry(root,bg=b_color3)
+textBox7_2.place(width=75,height=20,x=145,y=735)
+textBox8_2 = tk.Entry(root,bg=b_color3)
+textBox8_2.place(width=75,height=20,x=240,y=735)
+textBox9_2 = tk.Entry(root,bg=b_color2)
+textBox9_2.place(width=50,height=20,x=70,y=765)
+textBox10_2 = tk.Entry(root,bg=b_color2)
+textBox10_2.place(width=50,height=20,x=140,y=765)
+textBox6_3 = tk.Entry(root,bg=b_color4)
+textBox6_3.place(width=75,height=20,x=50,y=815)
+textBox7_3 = tk.Entry(root,bg=b_color3)
+textBox7_3.place(width=75,height=20,x=145,y=815)
+textBox8_3 = tk.Entry(root,bg=b_color3)
+textBox8_3.place(width=75,height=20,x=240,y=815)
+textBox9_3 = tk.Entry(root,bg=b_color2)
+textBox9_3.place(width=50,height=20,x=70,y=845)
+textBox10_3 = tk.Entry(root,bg=b_color2)
+textBox10_3.place(width=50,height=20,x=140,y=845)
+
+bln2 = tkinter.BooleanVar()
+check2 = tk.Checkbutton(root,variable=bln2,text="粒子数を表示する",font=(label_font_jp,9),bg=color1)
+check2.place(x=40,y=881)
+
+
+def click_file():
+    file_path = tkinter.filedialog.askopenfilename(filetypes = [("CSV(*.csv)","*.csv")])
+    textBox1_1.delete(0, tkinter.END)
+    textBox1_1.insert(tkinter.END,file_path)
+
+def click_file_cor():
+    file_path = tkinter.filedialog.askopenfilename(filetypes = [("CSV(*.csv)","*.csv")])
+    textBox1_2.delete(0, tkinter.END)
+    textBox1_2.insert(tkinter.END,file_path)
+
+def click_csv():
+    if textBox1_1.get() == "":
+        messagebox.showerror("エラー","読み込むデータファイルを選択してください")
+    elif textBox1_2.get() == "":
+        messagebox.showerror("エラー","補正に使うファイルを選択してください")
+    else:
+        data_csv = pd.read_csv(textBox1_1.get())
+        cor_csv = pd.read_csv(textBox1_2.get())
+        try:
+            global isotope_list
+            global isotope_list_sum
+            global ele_list
+            global mass_list
+            isotope_df_0 = data_csv.columns
+            data_csv_skip_column = int(data_csv.columns.get_loc("skip"))
+            isotope_df = isotope_df_0[1:data_csv_skip_column-1]
+            isotope_list = isotope_df.values.tolist()
+            isotope_list_sum = isotope_df.values.tolist()
+            print(isotope_list)
+            ele_list = []
+            for i in range(0,len(isotope_list)):
+                alpha_i = "".join([s for s in isotope_list[i] if s.isalpha()])
+                ele_list.append(alpha_i)
+            print(ele_list)
+            if len(ele_list) != len(set(ele_list)):
+                messagebox.showerror("エラー","各元素の同位体は1つにしてください")
+            else:
+                mass_list = []
+                for i in range(0,len(isotope_list)):
+                    digit_i = "".join([s for s in isotope_list[i] if s.isdigit()])
+                    mass_list.append(digit_i)
+                print(mass_list)
+                cor_list = cor_csv.iloc[0].to_list()
+                print(cor_list)
+                if len(cor_list) != len(ele_list):
+                    messagebox.showerror("エラー","正しい形式の補正ファイルを選択してください")
+                else:
+                    sample_label_long = textBox1_1.get()
+                    sample_label = sample_label_long[:-22]
+                    all_file = glob.glob(sample_label+"_*_NP_events_large.csv")
+                    data_num = len(all_file)
+                    sample = ["{}_{}_NP_events_large".format(sample_label,str(i)) for i in range(1,data_num+1)]
+                    print("Number of sample:{}".format(len(sample)))
+                    global data
+                    global data_use
+                    global data_use_cor
+                    global par_num
+                    data = pd.DataFrame()
+                    for run in range (0,len(sample)):
+                        datasheet = "{}.csv".format(sample[run])
+                        print("\n{}".format(datasheet))
+                        df = pd.read_csv(datasheet,low_memory=True)
+                        data = data.append(df,ignore_index=True)
+                    data_use = data["'[{}{}]+'".format(mass_list[0],ele_list[0])]                
+                    for i in range(1,len(ele_list)):
+                        data_i = data["'[{}{}]+'".format(mass_list[i],ele_list[i])]
+                        data_use = pd.concat([data_use,data_i],axis=1)
+                    data_use_cor = data["'[{}{}]+'".format(mass_list[0],ele_list[0])]/float(cor_list[0])
+                    for i in range(1,len(ele_list)):
+                        data_i_cor = data["'[{}{}]+'".format(mass_list[i],ele_list[i])]/float(cor_list[i])
+                        data_use_cor = pd.concat([data_use_cor,data_i_cor],axis=1)
+                    print(data_use_cor)
+                    data_use_cor_sum = np.sum(data_use_cor,axis=1)
+                    print(data_use_cor_sum)
+                    print(data_use_cor_sum.max())
+                    data_use_cor = pd.concat([data_use_cor,data_use_cor_sum],axis=1)
+                    print(isotope_list)
+                    isotope_list_sum.append("SUM")
+                    print(isotope_list_sum)
+                    data_use_cor.columns = isotope_list_sum
+                    print(data_use_cor)
+                    global data_ex
+                    data_ex = 1
+        except:
+            messagebox.showerror('エラー','正しい形式のデータファイルを選択してください') 
+
+def pick_data():
+    if data_ex == 0:
+        messagebox.showerror('エラー','csv読み込みを行ってください') 
+    else:
+        if textBox2.get() == "":
+            messagebox.showerror('エラー','値を入力してください') 
+        else:
+            try:
+                global data_use_cor
+                global data_cor_pick
+                global par_num
+                data_cor_pick = data_use_cor[data_use_cor["SUM"]>=int(textBox2.get())]
+                print(data_cor_pick)
+                par_num = len(data_cor_pick)
+                label4 = tk.Label(root,text="→ 粒子数 : {}".format(par_num),anchor=tk.CENTER,bg=color2,font=(label_font_jp,9))
+                label4.place(width=180,height=20,x=80,y=220)
+            except:
+                messagebox.showerror('エラー','値を正しく入力してください') 
+
+
+def pick_data_ok():
+    try:
+        global data_cor_pick
+        global data_use_cor_pick
+        global par_num
+        if int(par_num)<=2000:
+            data_use_cor_pick = data_cor_pick
+        else:
+            messagebox.showerror('エラー','粒子数は2000以下にしてください')
+    except:
+        messagebox.showerror('エラー','粒子数の確認を行ってください')
+
+
+
+def ele_comp_graph():
+    try:
+        global ele_list
+        global data_use_cor
+        global isotope_list
+        global isotope_list_sum
+        global ele_sort_list
+        global iso_sort_list
+        global iso_sort_list_sum
+        global data_use_cor_pick
+        global data_per
+        global data_per_range
+        global ele_x
+
+        SUM = data_use_cor_pick["SUM"]
+        if iso_sort == 0:
+            data_per = pd.DataFrame()
+            for i in range (0,len(isotope_list)):
+                data_per_i = data_use_cor_pick[isotope_list[i]]/SUM*100
+                data_per = pd.concat([data_per,data_per_i],axis=1)
+            data_per.columns = isotope_list
+            ele_x = ele_list
+            print(data_per)
+            print(isotope_list)
+            print(isotope_list_sum)
+        else:
+            data_per = pd.DataFrame()
+            for i in range (0,len(iso_sort_list)):
+                data_per_i = data_use_cor_pick[iso_sort_list[i]]/SUM*100
+                data_per = pd.concat([data_per,data_per_i],axis=1)
+            data_per.columns = iso_sort_list
+            ele_x = ele_sort_list
+            print(data_per)
+            print(iso_sort_list)
+            print(iso_sort_list_sum)
+    except:
+        messagebox.showerror('エラー','粒子の最小サイズの決定を行ってください') 
+    
+    if textBox3_1.get() == "":
+        data_per_range = data_per
+    else:
+        range_ele = textBox3_1.get().split("+")
+        range_ele_sa = list(set(range_ele)-set(ele_list))
+        if len(range_ele_sa) > 0:
+            messagebox.showerror('エラー','元素を正しく入力してください')
+        else:
+            if textBox3_2.get() == "":
+                tB3_2 = 0
+            else:
+                tB3_2 = float(textBox3_2.get())
+            if textBox3_3.get() == "":
+                tB3_3 = 100
+            else:
+                tB3_3 = float(textBox3_3.get())                    
+            range_data = pd.DataFrame()
+            for i in range (0,len(range_ele)):
+                range_n_i = ele_list.index(range_ele[i])
+                range_iso_i = isotope_list[range_n_i]
+                print(range_iso_i)
+                print(data_per[range_iso_i])
+                range_data = pd.concat([range_data,data_per[range_iso_i]],axis=1)
+            print(range_data)
+            range_data_sum = np.sum(range_data,axis=1)
+            print(range_data_sum)
+            if textBox3_2.get() == "0":
+                if textBox3_3.get() == "100":
+                    data_per_range = data_per[(range_data_sum>0)&(range_data_sum<100)]
+                else:
+                    data_per_range = data_per[(range_data_sum>0)&(range_data_sum<=tB3_3)]
+            elif textBox3_3.get() == "100":
+                data_per_range = data_per[(range_data_sum>=tB3_2)&(range_data_sum<100)]
+            else:
+                data_per_range = data_per[(range_data_sum>=tB3_2)&(range_data_sum<=tB3_3)]
+    ax3.cla()
+    plt.rcParams["font.family"] = graph_font
+    ax3.spines['top'].set_color(color_axes)
+    ax3.spines['bottom'].set_color(color_axes)
+    ax3.spines['left'].set_color(color_axes)
+    ax3.spines['right'].set_color(color_axes)
+    ax3.tick_params(colors=color_axes)
+
+    if bln1.get():
+        data_per_range = data_per_range.where(data_per_range>0.0001,np.nan)
+        for i in range(0,len(data_per_range)):
+            data_per_range_i = data_per_range.iloc[i].to_list()
+            xdata_i = ele_x
+            ydata_i = data_per_range_i
+            ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+            ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
+            ax3.set_yscale("log")
+            ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+    else:
+        for i in range(0,len(data_per_range)):
+            data_per_range_i = data_per_range.iloc[i].to_list()
+            xdata_i = ele_x
+            ydata_i = data_per_range_i
+            ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+            ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+            ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
+    canvas3.draw()
+
+def onclick(event):
+    #try:
+        global ele_x
+        global data_per_range
+        global iso_sort_list
+        global iso_sort_list_sum
+
+        print ('xdata=%f,ydata=%f'%(event.xdata, event.ydata))
+        event_i = int(event.xdata)
+        event_f = event.xdata-event_i
+        if event_f <= 0.5:
+            click_i = int(event_i)
+        else:
+            click_i = int(event_i+1)
+        if iso_sort == 0:
+            click_iso = isotope_list[click_i]
+        else:
+            click_iso = iso_sort_list[click_i]
+        print(click_iso)
+        click_iso_data = data_per_range[click_iso]
+        print(click_iso_data)
+        click_iso_dev = abs(click_iso_data-event.ydata)
+        click_iso_data_dav = pd.concat([click_iso_data,click_iso_dev],axis=1)
+        click_iso_data_dav.columns = ["ele","dev"]
+        click_iso_data_dav_sort = click_iso_data_dav.sort_values("dev")
+        click_iso_data_dav_sort_r = click_iso_data_dav_sort.reset_index()
+        click_target_line = click_iso_data_dav_sort_r[0:1]
+        print(click_target_line["index"])
+        click_NP_number = int(click_target_line["index"])
+
+        ax3.cla()
+        plt.rcParams["font.family"] = graph_font
+        ax3.spines['top'].set_color(color_axes)
+        ax3.spines['bottom'].set_color(color_axes)
+        ax3.spines['left'].set_color(color_axes)
+        ax3.spines['right'].set_color(color_axes)
+        ax3.tick_params(colors=color_axes)
+
+        if bln1.get():
+            data_per_range = data_per_range.where(data_per_range>0.0001,np.nan)
+            for i in range(0,len(data_per_range)):
+                data_per_range_i = data_per_range.iloc[i].to_list()
+                xdata_i = ele_x
+                ydata_i = data_per_range_i
+                ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
+                ax3.set_yscale("log")
+                ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+            data_per_range_click = data_per_range.loc[click_NP_number].to_list()
+            xdata_click = ele_x
+            ydata_click = data_per_range_click
+            ax3.set_yscale("log")
+            ax3.plot(xdata_click,ydata_click,"o-",c="red",alpha=1)
+        else:
+            for i in range(0,len(data_per_range)):
+                data_per_range_i = data_per_range.iloc[i].to_list()
+                xdata_i = ele_x
+                ydata_i = data_per_range_i
+                ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+                ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
+            data_per_range_click = data_per_range.loc[click_NP_number].to_list()
+            xdata_click = ele_x
+            ydata_click = data_per_range_click
+            ax3.plot(xdata_click,ydata_click,"o-",c="red",alpha=1)
+        canvas3.draw()
+    #except:
+    #    messagebox.showerror('エラー','粒子の最小サイズの決定を行ってください') 
+
+def ele_ratio_graph():
+    try:
+        global ele_list
+        global data_use_cor
+        global isotope_list
+        global isotope_list_sum
+        global data_use_cor_pick
+        if textBox4_1.get() == "" or textBox5_1.get() == "":
+            messagebox.showerror('エラー','分子と分母両方に元素を指定してください')
+        elif textBox4_2.get() == "" or textBox5_2.get() == "":
+            num_list = textBox4_1.get().split("+")
+            den_list = textBox5_1.get().split("+")
+            num_sa = list(set(num_list)-set(ele_list))
+            den_sa = list(set(den_list)-set(ele_list))
+            if len(num_sa) > 0:
+                messagebox.showerror('エラー','分子を正しく入力してください')
+            elif len(den_sa) > 0:
+                messagebox.showerror('エラー','分母を正しく入力してください')
+            else:
+                num_data = pd.DataFrame()
+                for i in range (0,len(num_list)):
+                    num_n_i = ele_list.index(num_list[i])
+                    print(num_n_i)
+                    num_iso_i = isotope_list[num_n_i]
+                    print(num_iso_i)
+                    print(data_cor_pick[num_iso_i])
+                    num_data = pd.concat([num_data,data_cor_pick[num_iso_i]],axis=1)
+                print(num_data)
+                num_data_sum = np.sum(num_data,axis=1)
+                den_data = pd.DataFrame()
+                for i in range (0,len(den_list)):
+                    den_n_i = ele_list.index(den_list[i])
+                    print(den_n_i)
+                    den_iso_i = isotope_list[den_n_i]
+                    print(den_iso_i)
+                    print(data_cor_pick[den_iso_i])
+                    den_data = pd.concat([den_data,data_cor_pick[den_iso_i]],axis=1)
+                print(den_data)
+                den_data_sum = np.sum(den_data,axis=1)
+                print(num_data_sum)
+                print(den_data_sum)
+                num_den = num_data_sum/den_data_sum
+                print(len(num_den))
+                num_den_index = list(range(0,len(num_den)))
+                num_den_list = num_den.to_list()
+
+                ax4.cla()
+                plt.rcParams["font.family"] = graph_font
+                ax4.spines['top'].set_color(color_axes)
+                ax4.spines['bottom'].set_color(color_axes)
+                ax4.spines['left'].set_color(color_axes)
+                ax4.spines['right'].set_color(color_axes)
+                ax4.tick_params(colors=color_axes)
+                ax4.scatter(num_den_index,num_den_list,c=color_plot_2,alpha=alpha_plot_2,s=20)
+                ax4.set_ylabel("{}/{}".format(textBox4_1.get(),textBox5_1.get()),fontname=graph_font,color=color_axes,weight=weight_font)
+                ax4.set_xlabel("N",fontname=graph_font,color=color_axes,weight=weight_font)
+                canvas4.draw()
+        else:
+            num_list_1 = textBox4_1.get().split("+")
+            den_list_1 = textBox5_1.get().split("+")
+            num_sa_1 = list(set(num_list_1)-set(ele_list))
+            den_sa_1 = list(set(den_list_1)-set(ele_list))
+            num_list_2 = textBox4_2.get().split("+")
+            den_list_2 = textBox5_2.get().split("+")
+            num_sa_2 = list(set(num_list_2)-set(ele_list))
+            den_sa_2 = list(set(den_list_2)-set(ele_list))
+            if len(num_sa_1) > 0 or len(num_sa_2) > 0:
+                messagebox.showerror('エラー','分子を正しく入力してください')
+            elif len(den_sa_1) > 0 or len(den_sa_2) > 0:
+                messagebox.showerror('エラー','分母を正しく入力してください')
+            else:
+                num_data_1 = pd.DataFrame()
+                for i in range (0,len(num_list_1)):
+                    num_n_1_i = ele_list.index(num_list_1[i])
+                    print(num_n_1_i)
+                    num_iso_1_i = isotope_list[num_n_1_i]
+                    print(num_iso_1_i)
+                    print(data_cor_pick[num_iso_1_i])
+                    num_data_1 = pd.concat([num_data_1,data_cor_pick[num_iso_1_i]],axis=1)
+                print(num_data_1)
+                num_data_sum_1 = np.sum(num_data_1,axis=1)
+                den_data_1 = pd.DataFrame()
+                for i in range (0,len(den_list_1)):
+                    den_n_1_i = ele_list.index(den_list_1[i])
+                    print(den_n_1_i)
+                    den_iso_1_i = isotope_list[den_n_1_i]
+                    print(den_iso_1_i)
+                    print(data_cor_pick[den_iso_1_i])
+                    den_data_1 = pd.concat([den_data_1,data_cor_pick[den_iso_1_i]],axis=1)
+                print(den_data_1)
+                den_data_sum_1 = np.sum(den_data_1,axis=1)
+                num_data_2 = pd.DataFrame()
+                for i in range (0,len(num_list_2)):
+                    num_n_2_i = ele_list.index(num_list_2[i])
+                    print(num_n_2_i)
+                    num_iso_2_i = isotope_list[num_n_2_i]
+                    print(num_iso_2_i)
+                    print(data_cor_pick[num_iso_2_i])
+                    num_data_2 = pd.concat([num_data_2,data_cor_pick[num_iso_2_i]],axis=1)
+                print(num_data_2)
+                num_data_sum_2 = np.sum(num_data_2,axis=1)
+                den_data_2 = pd.DataFrame()
+                for i in range (0,len(den_list_2)):
+                    den_n_2_i = ele_list.index(den_list_2[i])
+                    print(den_n_2_i)
+                    den_iso_2_i = isotope_list[den_n_2_i]
+                    print(den_iso_2_i)
+                    print(data_cor_pick[den_iso_2_i])
+                    den_data_2 = pd.concat([den_data_2,data_cor_pick[den_iso_2_i]],axis=1)
+                print(den_data_2)
+                den_data_sum_2 = np.sum(den_data_2,axis=1)
+                print(num_data_sum_1)
+                print(den_data_sum_1)
+                print(num_data_sum_2)
+                print(den_data_sum_2)
+                num_den_1 = num_data_sum_1/den_data_sum_1
+                print(len(num_den_1))
+                num_den_2 = num_data_sum_2/den_data_sum_2
+                print(len(num_den_2))
+                num_den_list_1 = num_den_1.to_list()
+                num_den_list_2 = num_den_2.to_list()
+
+                ax4.cla()
+                plt.rcParams["font.family"] = graph_font
+                ax4.spines['top'].set_color(color_axes)
+                ax4.spines['bottom'].set_color(color_axes)
+                ax4.spines['left'].set_color(color_axes)
+                ax4.spines['right'].set_color(color_axes)
+                ax4.tick_params(colors=color_axes)
+                ax4.scatter(num_den_list_2,num_den_list_1,c=color_plot_2,alpha=alpha_plot_2,s=size_plot)
+                ax4.set_ylabel("{}/{}".format(textBox4_1.get(),textBox5_1.get()),fontname=graph_font,color=color_axes,weight=weight_font)
+                ax4.set_xlabel("{}/{}".format(textBox4_2.get(),textBox5_2.get()),fontname=graph_font,color=color_axes,weight=weight_font)
+                canvas4.draw()
+    except:
+        messagebox.showerror('エラー','粒子の最小サイズの決定を行ってください') 
+
+def ele_class_graph():
+    try:
+        global ele_list
+        global data_use_cor
+        global isotope_list
+        global isotope_list_sum
+        global data_use_cor_pick
+        if textBox6_1.get() == "":
+            if textBox7_1.get() != "" or textBox8_1.get() != "":
+                messagebox.showerror('エラー','ラベルを入力してください')
+            else:
+                messagebox.showerror('エラー','1.から順番に設定してください')
+        else:
+            if textBox7_1.get() == "" or textBox8_1.get() == "":
+                messagebox.showerror('エラー','分子と分母両方に元素を指定してください')
+            else:
+                ele_label_1 = textBox6_1.get()
+                num_list_1 = textBox7_1.get().split("+")
+                den_list_1 = textBox8_1.get().split("+")
+                num_sa_1 = list(set(num_list_1)-set(ele_list))
+                den_sa_1 = list(set(den_list_1)-set(ele_list))
+                if len(num_sa_1) > 0:
+                    messagebox.showerror('エラー','分子を正しく入力してください')
+                elif len(den_sa_1) > 0:
+                    messagebox.showerror('エラー','分母を正しく入力してください')
+                else:
+                    num_data_1 = pd.DataFrame()
+                    for i in range (0,len(num_list_1)):
+                        num_n_1_i = ele_list.index(num_list_1[i])
+                        print(num_n_1_i)
+                        num_iso_1_i = isotope_list[num_n_1_i]
+                        print(num_iso_1_i)
+                        print(data_cor_pick[num_iso_1_i])
+                        num_data_1 = pd.concat([num_data_1,data_cor_pick[num_iso_1_i]],axis=1)
+                    print(num_data_1)
+                    num_data_sum_1 = np.sum(num_data_1,axis=1)
+                    den_data_1 = pd.DataFrame()
+                    for i in range (0,len(den_list_1)):
+                        den_n_1_i = ele_list.index(den_list_1[i])
+                        print(den_n_1_i)
+                        den_iso_1_i = isotope_list[den_n_1_i]
+                        print(den_iso_1_i)
+                        print(data_cor_pick[den_iso_1_i])
+                        den_data_1 = pd.concat([den_data_1,data_cor_pick[den_iso_1_i]],axis=1)
+                    print(den_data_1)
+                    den_data_sum_1 = np.sum(den_data_1,axis=1)
+                    print(num_data_sum_1)
+                    print(den_data_sum_1)
+                    num_den_1 = num_data_sum_1/den_data_sum_1
+                    num_den_list_1 = num_den_1.to_list()
+                    if textBox9_1.get() == "" and textBox10_1.get() == "":
+                        messagebox.showerror('エラー','値の範囲を入力してください')
+                    else:
+                        num_den_list_sel_1 = num_den_list_1
+                        if textBox9_1.get() != "":
+                            min_1 = float(textBox9_1.get())
+                            num_den_list_sel_1 = [i for i in num_den_list_sel_1 if i >= min_1]
+                        if textBox10_1.get() != "":
+                            max_1 = float(textBox10_1.get())
+                            num_den_list_sel_1 = [i for i in num_den_list_sel_1 if i <= max_1]
+                        num_den_list_sel_number_1 = len(num_den_list_sel_1)
+                        if textBox6_2.get() == "":
+                            if textBox6_3.get() == "":
+                                ax5.cla()
+                                plt.rcParams["font.family"] = graph_font
+                                ax5.spines['top'].set_color(color_axes)
+                                ax5.spines['bottom'].set_color(color_axes)
+                                ax5.spines['left'].set_color(color_axes)
+                                ax5.spines['right'].set_color(color_axes)
+                                ax5.tick_params(colors=color_axes)
+                                graph_bar = ax5.bar(ele_label_1,num_den_list_sel_number_1,color=color_bar)
+                                if bln2.get():
+                                    for i in graph_bar:
+                                        height = i.get_height()
+                                        ax5.annotate(text=height,xy=(i.get_x()+i.get_width()/2,height),ha="center",va="bottom",fontsize=18)
+                                ax5.set_ylabel("Number of particles",fontname=graph_font,color=color_axes,weight=weight_font)
+                                canvas5.draw()
+                            else:
+                                messagebox.showerror('エラー','1.から順番に設定してください')
+                        else:
+                            if textBox7_2.get() == "" or textBox8_2.get() == "":
+                                messagebox.showerror('エラー','分子と分母両方に元素を指定してください')
+                            else:
+                                ele_label_2 = textBox6_2.get()
+                                num_list_2 = textBox7_2.get().split("+")
+                                den_list_2 = textBox8_2.get().split("+")
+                                num_sa_2 = list(set(num_list_2)-set(ele_list))
+                                den_sa_2 = list(set(den_list_2)-set(ele_list))
+                                if len(num_sa_2) > 0:
+                                    messagebox.showerror('エラー','分子を正しく入力してください')
+                                elif len(den_sa_2) > 0:
+                                    messagebox.showerror('エラー','分母を正しく入力してください')
+                                else:
+                                    num_data_2 = pd.DataFrame()
+                                    for i in range (0,len(num_list_2)):
+                                        num_n_2_i = ele_list.index(num_list_2[i])
+                                        print(num_n_2_i)
+                                        num_iso_2_i = isotope_list[num_n_2_i]
+                                        print(num_iso_2_i)
+                                        print(data_cor_pick[num_iso_2_i])
+                                        num_data_2 = pd.concat([num_data_2,data_cor_pick[num_iso_2_i]],axis=1)
+                                    print(num_data_2)
+                                    num_data_sum_2 = np.sum(num_data_2,axis=1)
+                                    den_data_2 = pd.DataFrame()
+                                    for i in range (0,len(den_list_2)):
+                                        den_n_2_i = ele_list.index(den_list_2[i])
+                                        print(den_n_2_i)
+                                        den_iso_2_i = isotope_list[den_n_2_i]
+                                        print(den_iso_2_i)
+                                        print(data_cor_pick[den_iso_2_i])
+                                        den_data_2 = pd.concat([den_data_2,data_cor_pick[den_iso_2_i]],axis=1)
+                                    print(den_data_2)
+                                    den_data_sum_2 = np.sum(den_data_2,axis=1)
+                                    print(num_data_sum_2)
+                                    print(den_data_sum_2)
+                                    num_den_2 = num_data_sum_2/den_data_sum_2
+                                    num_den_list_2 = num_den_2.to_list()
+                                    if textBox9_2.get() == "" and textBox10_2.get() == "":
+                                        messagebox.showerror('エラー','値の範囲を入力してください')
+                                    else:
+                                        num_den_list_sel_2 = num_den_list_2
+                                        if textBox9_2.get() != "":
+                                            min_2 = float(textBox9_2.get())
+                                            num_den_list_sel_2 = [i for i in num_den_list_sel_2 if i >= min_2]
+                                        if textBox10_2.get() != "":
+                                            max_2 = float(textBox10_2.get())
+                                            num_den_list_sel_2 = [i for i in num_den_list_sel_2 if i <= max_2]
+                                        num_den_list_sel_number_2 = len(num_den_list_sel_2)
+                                        if textBox6_3.get() == "":
+                                            ax5.cla()
+                                            plt.rcParams["font.family"] = graph_font
+                                            ax5.spines['top'].set_color(color_axes)
+                                            ax5.spines['bottom'].set_color(color_axes)
+                                            ax5.spines['left'].set_color(color_axes)
+                                            ax5.spines['right'].set_color(color_axes)
+                                            ax5.tick_params(colors=color_axes)
+                                            x = np.array([ele_label_1,ele_label_2])
+                                            y = np.array([num_den_list_sel_number_1,num_den_list_sel_number_2])
+                                            x_position = np.arange(len(x))
+                                            graph_bar = ax5.bar(x_position,y,tick_label=x,color=color_bar)
+                                            if bln2.get():
+                                                for i in graph_bar:
+                                                    height = i.get_height()
+                                                    ax5.annotate(text=height,xy=(i.get_x()+i.get_width()/2,height),ha="center",va="bottom",fontsize=18)
+                                            ax5.set_ylabel("Number of particles",fontname=graph_font,color=color_axes,weight=weight_font)
+                                            canvas5.draw()
+                                        else:
+                                            if textBox7_3.get() == "" or textBox8_3.get() == "":
+                                                messagebox.showerror('エラー','分子と分母両方に元素を指定してください')
+                                            else:
+                                                ele_label_3 = textBox6_3.get()
+                                                num_list_3 = textBox7_3.get().split("+")
+                                                den_list_3 = textBox8_3.get().split("+")
+                                                num_sa_3 = list(set(num_list_3)-set(ele_list))
+                                                den_sa_3 = list(set(den_list_3)-set(ele_list))
+                                                if len(num_sa_3) > 0:
+                                                    messagebox.showerror('エラー','分子を正しく入力してください')
+                                                elif len(den_sa_3) > 0:
+                                                    messagebox.showerror('エラー','分母を正しく入力してください')
+                                                else:
+                                                    num_data_3 = pd.DataFrame()
+                                                    for i in range (0,len(num_list_3)):
+                                                        num_n_3_i = ele_list.index(num_list_3[i])
+                                                        print(num_n_3_i)
+                                                        num_iso_3_i = isotope_list[num_n_3_i]
+                                                        print(num_iso_3_i)
+                                                        print(data_cor_pick[num_iso_3_i])
+                                                        num_data_3 = pd.concat([num_data_3,data_cor_pick[num_iso_3_i]],axis=1)
+                                                    print(num_data_3)
+                                                    num_data_sum_3 = np.sum(num_data_3,axis=1)
+                                                    den_data_3 = pd.DataFrame()
+                                                    for i in range (0,len(den_list_3)):
+                                                        den_n_3_i = ele_list.index(den_list_3[i])
+                                                        print(den_n_3_i)
+                                                        den_iso_3_i = isotope_list[den_n_3_i]
+                                                        print(den_iso_3_i)
+                                                        print(data_cor_pick[den_iso_3_i])
+                                                        den_data_3 = pd.concat([den_data_3,data_cor_pick[den_iso_3_i]],axis=1)
+                                                    print(den_data_3)
+                                                    den_data_sum_3 = np.sum(den_data_3,axis=1)
+                                                    print(num_data_sum_3)
+                                                    print(den_data_sum_3)
+                                                    num_den_3 = num_data_sum_3/den_data_sum_3
+                                                    num_den_list_3 = num_den_3.to_list()
+                                                    if textBox9_3.get() == "" and textBox10_3.get() == "":
+                                                        messagebox.showerror('エラー','値の範囲を入力してください')
+                                                    else:
+                                                        num_den_list_sel_3 = num_den_list_3
+                                                        if textBox9_3.get() != "":
+                                                            min_3 = float(textBox9_3.get())
+                                                            num_den_list_sel_3 = [i for i in num_den_list_sel_3 if i >= min_3]
+                                                        if textBox10_3.get() != "":
+                                                            max_3 = float(textBox10_3.get())
+                                                            num_den_list_sel_3 = [i for i in num_den_list_sel_3 if i <= max_3]
+                                                        num_den_list_sel_number_3 = len(num_den_list_sel_3)
+                                                        ax5.cla()
+                                                        plt.rcParams["font.family"] = graph_font
+                                                        ax5.spines['top'].set_color(color_axes)
+                                                        ax5.spines['bottom'].set_color(color_axes)
+                                                        ax5.spines['left'].set_color(color_axes)
+                                                        ax5.spines['right'].set_color(color_axes)
+                                                        ax5.tick_params(colors=color_axes)
+                                                        x = np.array([ele_label_1,ele_label_2,ele_label_3])
+                                                        y = np.array([num_den_list_sel_number_1,num_den_list_sel_number_2,num_den_list_sel_number_3])
+                                                        x_position = np.arange(len(x))
+                                                        graph_bar = ax5.bar(x_position,y,tick_label=x,color=color_bar)
+                                                        if bln2.get():
+                                                            for i in graph_bar:
+                                                                height = i.get_height()
+                                                                ax5.annotate(text=height,xy=(i.get_x()+i.get_width()/2,height),ha="center",va="bottom",fontsize=18)
+                                                        ax5.set_ylabel("Number of particles",fontname=graph_font,color=color_axes,weight=weight_font)
+                                                        canvas5.draw()                          
+    except:
+        messagebox.showerror('エラー','粒子の最小サイズの決定を行ってください') 
+
+def layout():
+    newwindow = tk.Toplevel(root)
+    newwindow.geometry("500x500")
+    newwindow.title(u"レイアウト設定")
+
+    label_n1 = tk.Label(newwindow,text="グラフのフォント",font=(label_font_jp,9),anchor=tk.W)
+    label_n1.place(width=100,height=20,x=20,y=80)
+    label_n2 = tk.Label(newwindow,text="プロットの大きさ",font=(label_font_jp,9),anchor=tk.W)
+    label_n2.place(width=100,height=20,x=20,y=110)
+    label_n3 = tk.Label(newwindow,text="元素組成グラフ",font=(label_font_jp,9),anchor=tk.W)
+    label_n3.place(width=100,height=20,x=20,y=150)
+    label_n4 = tk.Label(newwindow,text="プロットの透明度",font=(label_font_jp,9),anchor=tk.W)
+    label_n4.place(width=100,height=20,x=30,y=180)
+    label_n5 = tk.Label(newwindow,text="プロットの色",font=(label_font_jp,9),anchor=tk.W)
+    label_n5.place(width=100,height=20,x=30,y=210)
+    label_n6 = tk.Label(newwindow,text="元素比グラフ",font=(label_font_jp,9),anchor=tk.W)
+    label_n6.place(width=100,height=20,x=20,y=250)
+    label_n7 = tk.Label(newwindow,text="プロットの透明度",font=(label_font_jp,9),anchor=tk.W)
+    label_n7.place(width=100,height=20,x=30,y=280)
+    label_n8 = tk.Label(newwindow,text="プロットの色",font=(label_font_jp,9),anchor=tk.W)
+    label_n8.place(width=100,height=20,x=30,y=310)
+    label_n9 = tk.Label(newwindow,text="組成分類グラフ",font=(label_font_jp,9),anchor=tk.W)
+    label_n9.place(width=100,height=20,x=20,y=350)
+    label_n9 = tk.Label(newwindow,text="棒グラフの色",font=(label_font_jp,9),anchor=tk.W)
+    label_n9.place(width=100,height=20,x=30,y=380)
+    
+    bln_n1 = tkinter.BooleanVar()
+    if color_fig == "black":
+        bln_n1.set(True)
+    elif color_fig == "white":
+        bln_n1.set(False)
+    else:
+        print("checkbox_error")   
+    check_n1 = tk.Checkbutton(newwindow,variable=bln_n1,text="背景を黒にする",font=(label_font_jp,9))
+    check_n1.place(x=20,y=40)
+
+    graph_font_list = ["Arial","Calibri","Cambria","Meiryo"]
+    graph_font_list_number = graph_font_list.index(graph_font)
+    combobox_n1 = ttk.Combobox(newwindow,state="readonly",values=["Arial","Calibri","Cambria","Meiryo"])
+    combobox_n1.place(width=80,height=20,x=130,y=80)
+    combobox_n1.current(int(graph_font_list_number))    
+
+    color_plot_list_0_1 = ["red","blue","green","yellow","gray"]
+    if color_plot_1 in color_plot_list_0_1:
+        color_plot_list_1 = ["red","blue","green","yellow","gray"]
+    else:
+        color_plot_list_1 = ["red","blue","green","yellow","gray",color_plot_1]
+    color_plot_list_number_1 = color_plot_list_1.index(color_plot_1)
+    global combobox_n2_1
+    combobox_n2_1 = ttk.Combobox(newwindow,state="readonly",values=color_plot_list_1)
+    combobox_n2_1.place(width=80,height=20,x=130,y=210)
+    combobox_n2_1.current(int(color_plot_list_number_1))  
+
+    def color_choose_plot_1():
+        color_now_1 = color_plot_1
+        color_1 = colorchooser.askcolor(color_now_1,title="その他の色",master=newwindow)
+        print(color_1)
+        color_list_1=list(color_1)
+        colorcode_1 = color_list_1[1]
+        if not color_1 == (None, None):
+            global combobox_n2_1
+            combobox_n2_1 = ttk.Combobox(newwindow,state="readonly",values=["red","blue","green","yellow","gray",colorcode_1])
+            combobox_n2_1.place(width=80,height=20,x=130,y=210)
+            combobox_n2_1.current(5)  
+            print(combobox_n2_1.get()) 
+        newwindow.attributes("-topmost",True)            
+
+    btn_n1_1 = tk.Button(newwindow,text="その他の色",command=color_choose_plot_1)
+    btn_n1_1.place(width=80,height=25,x=225,y=210)    
+
+    color_plot_list_0_2 = ["red","blue","green","yellow","gray"]
+    if color_plot_2 in color_plot_list_0_2:
+        color_plot_list_2 = ["red","blue","green","yellow","gray"]
+    else:
+        color_plot_list_2 = ["red","blue","green","yellow","gray",color_plot_2]
+    color_plot_list_number_2 = color_plot_list_2.index(color_plot_2)
+    global combobox_n2_2
+    combobox_n2_2 = ttk.Combobox(newwindow,state="readonly",values=color_plot_list_2)
+    combobox_n2_2.place(width=80,height=20,x=130,y=310)
+    combobox_n2_2.current(int(color_plot_list_number_2))  
+
+    def color_choose_plot_2():
+        color_now_2 = color_plot_2
+        color_2 = colorchooser.askcolor(color_now_2,title="その他の色",master=newwindow)
+        print(color_2)
+        color_list_2=list(color_2)
+        colorcode_2 = color_list_2[1]
+        if not color_2 == (None, None):
+            global combobox_n2_2
+            combobox_n2_2 = ttk.Combobox(newwindow,state="readonly",values=["red","blue","green","yellow","gray",colorcode_2])
+            combobox_n2_2.place(width=80,height=20,x=130,y=310)
+            combobox_n2_2.current(5)  
+            print(combobox_n2_2.get()) 
+        newwindow.attributes("-topmost",True)            
+
+    btn_n1_2 = tk.Button(newwindow,text="その他の色",command=color_choose_plot_2)
+    btn_n1_2.place(width=80,height=25,x=225,y=310)    
+
+    alpha_plot_list_1 = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+    alpha_plot_list_number_1 = alpha_plot_list_1.index(alpha_plot_1)
+    combobox_n3_1 = ttk.Combobox(newwindow,state="readonly",values=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0])
+    combobox_n3_1.place(width=80,height=20,x=130,y=180)
+    combobox_n3_1.current(int(alpha_plot_list_number_1)) 
+    
+    alpha_plot_list_2 = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+    alpha_plot_list_number_2 = alpha_plot_list_2.index(alpha_plot_2)
+    combobox_n3_2 = ttk.Combobox(newwindow,state="readonly",values=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0])
+    combobox_n3_2.place(width=80,height=20,x=130,y=280)
+    combobox_n3_2.current(int(alpha_plot_list_number_2)) 
+
+    color_bar_list_0=["red","blue","green","yellow","gray"]
+    if color_bar in color_bar_list_0:
+        color_bar_list = ["red","blue","green","yellow","gray"]
+    else:
+        color_bar_list = ["red","blue","green","yellow","gray",color_bar]
+    color_bar_list_number=color_bar_list.index(color_bar)
+    global combobox_n4
+    combobox_n4 = ttk.Combobox(newwindow,state="readonly",values=color_bar_list)
+    combobox_n4.place(width=80,height=20,x=130,y=380)
+    combobox_n4.current(int(color_bar_list_number))  
+
+    def color_choose_bar():
+        color_now = color_bar
+        color = colorchooser.askcolor(color_now,title="その他の色",master=newwindow)
+        print(color)
+        color_list=list(color)
+        colorcode = color_list[1]
+        if not colorcode == "None":
+            global combobox_n4
+            combobox_n4 = ttk.Combobox(newwindow,state="readonly",values=["red","blue","green","yellow","gray",colorcode])
+            combobox_n4.place(width=80,height=20,x=130,y=380)
+            combobox_n4.current(5)  
+            print(combobox_n4.get())   
+        newwindow.attributes("-topmost",True)
+
+    btn_n2 = tk.Button(newwindow,text="その他の色",command=color_choose_bar)
+    btn_n2.place(width=80,height=25,x=225,y=380)          
+
+    """
+    bln_n2 = tkinter.BooleanVar()
+    if bar_style == "枠あり":
+        bln_n2.set(True)
+    elif bar_style == "枠なし":
+        bln_n2.set(False)
+    else:
+        print("checkbox_error")   
+    check_n2 = tk.Checkbutton(newwindow,variable=bln_n2,text="棒グラフに枠線を表示する",font=(label_font_jp,9))
+    check_n2.place(x=20,y=50)
+    """
+
+    textBox_n1 = ttk.Entry(newwindow)
+    textBox_n1.place(width=60,height=20,x=130,y=110)
+    textBox_n1.insert(tkinter.END,size_plot)
+
+    def OK():
+        global color_fig
+        global color_axes
+        global graph_font
+        global color_plot_1
+        global color_plot_2
+        global alpha_plot_1
+        global alpha_plot_2
+        global color_bar
+        global bar_style
+        global size_plot
+        global tri_plot_color
+        if bln_n1.get():
+            color_fig = "black"
+            color_axes = "white"
+        else:
+            color_fig = "white"
+            color_axes = "black"            
+        print("color_fig:"+color_fig)
+        print("color_axes:"+color_axes)
+        graph_font = combobox_n1.get()
+        print("graph_font:"+graph_font)
+        color_plot_1 = combobox_n2_1.get()
+        print("color_plot_1:"+color_plot_1)
+        color_plot_2 = combobox_n2_2.get()
+        print("color_plot_2:"+color_plot_2)
+        alpha_plot_1 = float(combobox_n3_1.get())
+        print("alpha_plot_1:"+str(alpha_plot_1))
+        alpha_plot_2 = float(combobox_n3_2.get())
+        print("alpha_plot_2:"+str(alpha_plot_2))
+        color_bar = combobox_n4.get()
+        print("color_bar:"+color_bar)    
+        """        
+        if bln_n2.get():
+            bar_style = "枠あり"
+        else:
+            bar_style = "枠なし"
+        print("bar_style:"+bar_style)  
+        size_plot=int(float(textBox_n1.get()))
+        print("size_plot:"+str(size_plot))  
+        if bln_n3.get():
+            tri_plot_color = "ON"
+        else:
+            tri_plot_color = "OFF"
+        print("tri_plot_color:"+tri_plot_color)                   
+        """
+        newwindow.destroy()
+
+    def Cancel():
+        global color_fig
+        global color_axes
+        global graph_font
+        global color_plot_1
+        global color_plot_2
+        global alpha_plot_1
+        global alpha_plot_2
+        global color_bar
+        global bar_style
+        global size_plot
+        global tri_plot_color
+        color_fig = color_fig
+        print("color_fig:"+color_fig)
+        color_axes = color_axes
+        print("color_axes:"+color_axes)
+        graph_font = graph_font
+        print("graph_font:"+graph_font)
+        color_plot_1 = color_plot_1
+        print("color_plot_1:"+color_plot_1)
+        color_plot_2 = color_plot_2
+        print("color_plot_2:"+color_plot_2)
+        alpha_plot_1 = float(alpha_plot_1)
+        print("alpha_plot_1:"+str(alpha_plot_1))
+        alpha_plot_2 = float(alpha_plot_2)
+        print("alpha_plot_2:"+str(alpha_plot_2))
+        color_bar = color_bar
+        print("color_bar:"+color_bar)
+        #bar_style = bar_style
+        #print("bar_style:"+bar_style)
+        size_plot = float(size_plot)
+        print("size_plot:"+str(size_plot))
+        #tri_plot_color = tri_plot_color
+        #print("tri_plot_color:"+tri_plot_color)                   
+        newwindow.destroy()
+
+    btn_n3 = tk.Button(newwindow,text="決定",command=OK)
+    btn_n3.place(width=80,height=25,x=20,y=450)
+    btn_n4 = tk.Button(newwindow,text="キャンセル",command=Cancel)
+    btn_n4.place(width=80,height=25,x=110,y=450)
+
+def sort():
+    newwindow_2 = tk.Toplevel(root)
+    newwindow_2.geometry("500x150")
+    newwindow_2.title(u"元素並び変更")
+    newwindow_2.lift()
+    textBox_n21 = tk.Entry(newwindow_2,bg=b_color3)
+    textBox_n21.place(width=420,height=20,x=40,y=40)
+
+    def OK_n2():
+        global iso_sort
+        global iso_sort_list
+        global iso_sort_list_sum
+        global ele_list
+        global isotope_list
+        global ele_sort_list
+
+        ele_sort_list = textBox_n21.get().split(",")
+        ele_sort_sa = list(set(ele_sort_list)-set(ele_list))
+        if len(ele_sort_sa) > 0:
+            messagebox.showerror('エラー','元素を正しく入力してください')
+        elif len(ele_sort_list) != len(ele_list):
+            ret_2 = messagebox.askyesno('確認','元素がすべて入力されていませんがよろしいですか？')
+            if ret_2 == True:
+                iso_sort_list = []
+                iso_sort_list_sum = []
+                for i in range (0,len(ele_sort_list)):
+                    ele_sort_n_i = ele_list.index(ele_sort_list[i])
+                    ele_iso_i = isotope_list[ele_sort_n_i]
+                    iso_sort_list.append(ele_iso_i)
+                    iso_sort_list_sum.append(ele_iso_i)
+                print(iso_sort_list)
+                iso_sort_list_sum.append("SUM")
+                iso_sort = 1
+                newwindow_2.destroy()
+        else:
+            iso_sort_list = []
+            iso_sort_list_sum = []
+            for i in range (0,len(ele_sort_list)):
+                ele_sort_n_i = ele_list.index(ele_sort_list[i])
+                ele_iso_i = isotope_list[ele_sort_n_i]
+                iso_sort_list.append(ele_iso_i)
+                iso_sort_list_sum.append(ele_iso_i)
+            print(iso_sort_list)
+            iso_sort_list_sum.append("SUM")
+            iso_sort = 1
+            newwindow_2.destroy() 
+
+    def Cancel_n2():
+        global iso_sort
+        iso_sort = 0
+        newwindow_2.destroy()
+
+    btn_n21 = tk.Button(newwindow_2,text="決定",command=OK_n2)
+    btn_n21.place(width=80,height=25,x=300,y=90)
+    btn_n22 = tk.Button(newwindow_2,text="キャンセル",command=Cancel_n2)
+    btn_n22.place(width=80,height=25,x=390,y=90)
+
+
+def savefig3():
+    file_path = tkinter.filedialog.asksaveasfilename(defaultextension="png",filetypes=[("PNG(*.png)","*.png")])
+    
+    print(file_path)
+
+    if len(file_path) != 0:
+        fig3.savefig(file_path)
+
+
+def savefig4():
+    file_path = tkinter.filedialog.asksaveasfilename(defaultextension="png",filetypes=[("PNG(*.png)","*.png")])
+    
+    print(file_path)
+
+    if len(file_path) != 0:
+        fig4.savefig(file_path)
+
+def savefig5():
+    file_path = tkinter.filedialog.asksaveasfilename(defaultextension="png",filetypes=[("PNG(*.png)","*.png")])
+    
+    print(file_path)
+
+    if len(file_path) != 0:
+        fig5.savefig(file_path)
+
+fig3.canvas.mpl_connect("button_press_event",onclick)
+
+btn1 = tk.Button(root,text="参照",command=click_file,font=(label_font_jp,9))
+btn1.place(width=40,height=25,x=275,y=33)
+btn2 = tk.Button(root,text="参照",command=click_file_cor,font=(label_font_jp,9))
+btn2.place(width=40,height=25,x=275,y=78)
+btn3 = tk.Button(root,text="csv読み込み",command=click_csv,font=(label_font_jp,9))
+btn3.place(width=120,height=25,x=120,y=125)
+btn4 = tk.Button(root,text="決定",command=pick_data,font=(label_font_jp,9))
+btn4.place(width=40,height=25,x=250,y=183)
+btn4 = tk.Button(root,text="データ決定",command=pick_data_ok,font=(label_font_jp,9))
+btn4.place(width=120,height=25,x=120,y=260)
+btn5 = tk.Button(root,text="グラフ表示",command=ele_comp_graph,font=(label_font_jp,9))
+btn5.place(width=80,height=25,x=240,y=389)
+btn6 = tk.Button(root,text="グラフ表示",command=ele_ratio_graph,font=(label_font_jp,9))
+btn6.place(width=80,height=25,x=240,y=536)
+btn7 = tk.Button(root,text="グラフ表示",command=ele_class_graph,font=(label_font_jp,9))
+btn7.place(width=80,height=25,x=240,y=880)
+
+label1 = tk.Label(root,text="ファイル",anchor=tk.CENTER,bg=color2,font=(label_font_jp,9))
+label1.place(width=80,height=20,x=28,y=35)
+label2 = tk.Label(root,text="補正",anchor=tk.CENTER,bg=color2,font=(label_font_jp,9))
+label2.place(width=80,height=20,x=28,y=80)
+label3 = tk.Label(root,text="最小サイズ : ",anchor=tk.CENTER,bg=color2,font=(label_font_jp,9))
+label3.place(width=80,height=20,x=58,y=185)
+label4 = tk.Label(root,text="元素組成",anchor=tk.CENTER,bg=color3,font=(label_font_jp,10))
+label4.place(width=66,height=16,x=22,y=326.2)
+label4_1 = tk.Label(root,text=":",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
+label4_1.place(width=10,height=16,x=75,y=390)
+label4_2 = tk.Label(root,text="-",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
+label4_2.place(width=10,height=16,x=145,y=392)
+label5 = tk.Label(root,text="元素比",anchor=tk.CENTER,bg=color4,font=(label_font_jp,10))
+label5.place(width=66,height=16,x=22,y=471.2)
+label6_1 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label6_1.place(width=10,height=16,x=120,y=510)
+label6_2 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label6_2.place(width=10,height=16,x=120,y=540)
+label7 = tk.Label(root,text="組成分類",anchor=tk.CENTER,bg=color5,font=(label_font_jp,10))
+label7.place(width=66,height=16,x=22,y=618.2)
+label8_1 = tk.Label(root,text="1.",anchor=tk.CENTER,bg=color1,font=(label_font_jp,10))
+label8_1.place(width=12,height=16,x=35,y=658)
+label9_1 = tk.Label(root,text="(",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label9_1.place(width=10,height=16,x=130,y=658)
+label10_1 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label10_1.place(width=10,height=16,x=225,y=658)
+label11_1 = tk.Label(root,text=")",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label11_1.place(width=10,height=16,x=320,y=658)
+label12_1 = tk.Label(root,text="→",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
+label12_1.place(width=12,height=16,x=52,y=687)
+label13_1 = tk.Label(root,text="-",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
+label13_1.place(width=10,height=16,x=125,y=687)
+label8_2 = tk.Label(root,text="2.",anchor=tk.CENTER,bg=color1,font=(label_font_jp,10))
+label8_2.place(width=12,height=16,x=35,y=738)
+label9_2 = tk.Label(root,text="(",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label9_2.place(width=10,height=16,x=130,y=738)
+label10_2 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label10_2.place(width=10,height=16,x=225,y=738)
+label11_2 = tk.Label(root,text=")",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label11_2.place(width=10,height=16,x=320,y=738)
+label12_2 = tk.Label(root,text="→",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
+label12_2.place(width=12,height=16,x=52,y=767)
+label13_2 = tk.Label(root,text="-",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
+label13_2.place(width=10,height=16,x=125,y=767)
+label8_3 = tk.Label(root,text="3.",anchor=tk.CENTER,bg=color1,font=(label_font_jp,10))
+label8_3.place(width=12,height=16,x=35,y=818)
+label9_3 = tk.Label(root,text="(",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label9_3.place(width=10,height=16,x=130,y=818)
+label10_3 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label10_3.place(width=10,height=16,x=225,y=818)
+label11_3 = tk.Label(root,text=")",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
+label11_3.place(width=10,height=16,x=320,y=818)
+label12_3 = tk.Label(root,text="→",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
+label12_3.place(width=12,height=16,x=52,y=847)
+label13_3 = tk.Label(root,text="-",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
+label13_3.place(width=10,height=16,x=125,y=847)
+
+menubar = tk.Menu(root)
+root.config(menu = menubar)
+
+save_menu = tk.Menu(menubar, tearoff = 0)
+menubar.add_cascade(label = 'ファイル', menu = save_menu)
+
+savefig_menu = tk.Menu(menubar, tearoff = 0)
+menubar.add_cascade(label = 'グラフ保存', menu = savefig_menu)
+
+tool_menu = tk.Menu(menubar, tearoff = 0)
+menubar.add_cascade(label = 'ツール', menu = tool_menu)
+
+setting_menu = tk.Menu(menubar, tearoff = 0)
+menubar.add_cascade(label = '設定', menu = setting_menu)
+
+savefig_menu.add_command(label = '元素組成グラフ',command = savefig3)
+savefig_menu.add_command(label = '元素比グラフ',command = savefig4)
+savefig_menu.add_command(label = '組成分類グラフ',command = savefig5)
+#savefig_menu.add_command(label = '三角グラフデータcsv',command = save_csv)
+#save_menu.add_command(label = '名前を付けて保存',command = savelist)
+#save_menu.add_command(label = '開く',command = openlist)
+#save_menu.add_command(label = '補正項読み出し',command = openlist_green)
+setting_menu.add_command(label = 'レイアウト設定',command = layout)
+setting_menu.add_command(label = '元素並び変更',command = sort)
+#tool_menu.add_command(label = "範囲指定",command = hannisitei)
+
+root.mainloop()
+
