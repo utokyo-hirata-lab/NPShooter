@@ -167,65 +167,71 @@ canvas5._tkcanvas.place(x=1022,y=497)
 frame6 = tk.Canvas(root,width=71,height=25,bg=color3)
 frame6.place(x=18,y=320)
 
+bln_m1 = tkinter.BooleanVar()
+check_m1 = tk.Checkbutton(root,variable=bln_m1,text="モル比で表示する",font=(label_font_jp,9),bg=color1)
+check_m1.place(x=40,y=360)
 bln1 = tkinter.BooleanVar()
 check1 = tk.Checkbutton(root,variable=bln1,text="縦軸を対数表示にする",font=(label_font_jp,9),bg=color1)
-check1.place(x=40,y=360)
+check1.place(x=40,y=390)
 textBox3_1 = tk.Entry(root,bg=b_color3)
-textBox3_1.place(width=30,height=20,x=40,y=390)
+textBox3_1.place(width=30,height=20,x=40,y=420)
 textBox3_2 = tk.Entry(root,bg=b_color2)
-textBox3_2.place(width=50,height=20,x=90,y=390)
+textBox3_2.place(width=50,height=20,x=90,y=420)
 textBox3_3 = tk.Entry(root,bg=b_color2)
-textBox3_3.place(width=50,height=20,x=160,y=390)
+textBox3_3.place(width=50,height=20,x=160,y=420)
 
 frame7 = tk.Canvas(root,width=71,height=25,bg=color4)
-frame7.place(x=18,y=465)
+frame7.place(x=18,y=475)
 
+bln_m2 = tkinter.BooleanVar()
+check_m2 = tk.Checkbutton(root,variable=bln_m2,text="モル比で表示する",font=(label_font_jp,9),bg=color1)
+check_m2.place(x=40,y=515)
 textBox4_1 = tk.Entry(root,bg=b_color3)
-textBox4_1.place(width=75,height=20,x=40,y=508)
+textBox4_1.place(width=75,height=20,x=40,y=545)
 textBox5_1 = tk.Entry(root,bg=b_color3)
-textBox5_1.place(width=75,height=20,x=135,y=508)
+textBox5_1.place(width=75,height=20,x=135,y=545)
 textBox4_2 = tk.Entry(root,bg=b_color3)
-textBox4_2.place(width=75,height=20,x=40,y=538)
+textBox4_2.place(width=75,height=20,x=40,y=575)
 textBox5_2 = tk.Entry(root,bg=b_color3)
-textBox5_2.place(width=75,height=20,x=135,y=538)
+textBox5_2.place(width=75,height=20,x=135,y=575)
 
 frame8 = tk.Canvas(root,width=71,height=25,bg=color5)
-frame8.place(x=18,y=612)
+frame8.place(x=18,y=632)
 
 textBox6_1 = tk.Entry(root,bg=b_color4)
-textBox6_1.place(width=75,height=20,x=50,y=655)
+textBox6_1.place(width=75,height=20,x=50,y=675)
 textBox7_1 = tk.Entry(root,bg=b_color3)
-textBox7_1.place(width=75,height=20,x=145,y=655)
+textBox7_1.place(width=75,height=20,x=145,y=675)
 textBox8_1 = tk.Entry(root,bg=b_color3)
-textBox8_1.place(width=75,height=20,x=240,y=655)
+textBox8_1.place(width=75,height=20,x=240,y=675)
 textBox9_1 = tk.Entry(root,bg=b_color2)
-textBox9_1.place(width=50,height=20,x=70,y=685)
+textBox9_1.place(width=50,height=20,x=70,y=705)
 textBox10_1 = tk.Entry(root,bg=b_color2)
-textBox10_1.place(width=50,height=20,x=140,y=685)
+textBox10_1.place(width=50,height=20,x=140,y=705)
 textBox6_2 = tk.Entry(root,bg=b_color4)
-textBox6_2.place(width=75,height=20,x=50,y=735)
+textBox6_2.place(width=75,height=20,x=50,y=755)
 textBox7_2 = tk.Entry(root,bg=b_color3)
-textBox7_2.place(width=75,height=20,x=145,y=735)
+textBox7_2.place(width=75,height=20,x=145,y=755)
 textBox8_2 = tk.Entry(root,bg=b_color3)
-textBox8_2.place(width=75,height=20,x=240,y=735)
+textBox8_2.place(width=75,height=20,x=240,y=755)
 textBox9_2 = tk.Entry(root,bg=b_color2)
-textBox9_2.place(width=50,height=20,x=70,y=765)
+textBox9_2.place(width=50,height=20,x=70,y=785)
 textBox10_2 = tk.Entry(root,bg=b_color2)
-textBox10_2.place(width=50,height=20,x=140,y=765)
+textBox10_2.place(width=50,height=20,x=140,y=785)
 textBox6_3 = tk.Entry(root,bg=b_color4)
-textBox6_3.place(width=75,height=20,x=50,y=815)
+textBox6_3.place(width=75,height=20,x=50,y=835)
 textBox7_3 = tk.Entry(root,bg=b_color3)
-textBox7_3.place(width=75,height=20,x=145,y=815)
+textBox7_3.place(width=75,height=20,x=145,y=835)
 textBox8_3 = tk.Entry(root,bg=b_color3)
-textBox8_3.place(width=75,height=20,x=240,y=815)
+textBox8_3.place(width=75,height=20,x=240,y=835)
 textBox9_3 = tk.Entry(root,bg=b_color2)
-textBox9_3.place(width=50,height=20,x=70,y=845)
+textBox9_3.place(width=50,height=20,x=70,y=865)
 textBox10_3 = tk.Entry(root,bg=b_color2)
-textBox10_3.place(width=50,height=20,x=140,y=845)
+textBox10_3.place(width=50,height=20,x=140,y=865)
 
 bln2 = tkinter.BooleanVar()
 check2 = tk.Checkbutton(root,variable=bln2,text="粒子数を表示する",font=(label_font_jp,9),bg=color1)
-check2.place(x=40,y=881)
+check2.place(x=40,y=901)
 
 
 def click_file():
@@ -281,9 +287,19 @@ def click_csv():
                     data_num = len(all_file)
                     sample = ["{}_{}_NP_events_large".format(sample_label,str(i)) for i in range(1,data_num+1)]
                     print("Number of sample:{}".format(len(sample)))
+                    atomass_list = []
+                    for i in range(0,len(ele_list)):
+                        element_list_i = element_list[element_list["Atomic Symbol"] == ele_list[i]]
+                        element_list_iso_i = element_list_i[element_list_i["Mass Number"] == int(mass_list[i])]
+                        element_list_atomass_i = element_list_iso_i["Relative Atomic Mass"].tolist()
+                        atomass_i = float(element_list_atomass_i[0])
+                        print(atomass_i)
+                        atomass_list.append(atomass_i)
+                    print(atomass_list)
                     global data
                     global data_use
                     global data_use_cor
+                    global data_use_cor_mol
                     global par_num
                     data = pd.DataFrame()
                     for run in range (0,len(sample)):
@@ -309,6 +325,17 @@ def click_csv():
                     print(isotope_list_sum)
                     data_use_cor.columns = isotope_list_sum
                     print(data_use_cor)
+                    data_use_cor_mol = data["'[{}{}]+'".format(mass_list[0],ele_list[0])]/float(cor_list[0])/float(atomass_list[0])
+                    for i in range(1,len(ele_list)):
+                        data_i_cor_mol = data["'[{}{}]+'".format(mass_list[i],ele_list[i])]/float(cor_list[i])/float(atomass_list[i])
+                        data_use_cor_mol = pd.concat([data_use_cor_mol,data_i_cor_mol],axis=1)
+                    print(data_use_cor_mol)
+                    data_use_cor_mol_sum = np.sum(data_use_cor_mol,axis=1)
+                    print(data_use_cor_mol_sum)
+                    print(data_use_cor_mol_sum.max())
+                    data_use_cor_mol = pd.concat([data_use_cor_mol,data_use_cor_mol_sum],axis=1)
+                    data_use_cor_mol.columns = isotope_list_sum
+                    print(data_use_cor_mol)
                     global data_ex
                     data_ex = 1
         except:
@@ -324,9 +351,13 @@ def pick_data():
             try:
                 global data_use_cor
                 global data_cor_pick
+                global data_use_cor_mol
+                global data_cor_mol_pick
                 global par_num
                 data_cor_pick = data_use_cor[data_use_cor["SUM"]>=int(textBox2.get())]
+                data_cor_mol_pick = data_use_cor_mol[data_use_cor["SUM"]>=int(textBox2.get())]
                 print(data_cor_pick)
+                print(data_cor_mol_pick)
                 par_num = len(data_cor_pick)
                 label4 = tk.Label(root,text="→ 粒子数 : {}".format(par_num),anchor=tk.CENTER,bg=color2,font=(label_font_jp,9))
                 label4.place(width=180,height=20,x=80,y=220)
@@ -337,10 +368,13 @@ def pick_data():
 def pick_data_ok():
     try:
         global data_cor_pick
+        global data_cor_mol_pick
         global data_use_cor_pick
+        global data_use_cor_mol_pick
         global par_num
         if int(par_num)<=2000:
             data_use_cor_pick = data_cor_pick
+            data_use_cor_mol_pick = data_cor_mol_pick
         else:
             messagebox.showerror('エラー','粒子数は2000以下にしてください')
     except:
@@ -363,22 +397,31 @@ def ele_comp_graph():
         global ele_x
 
         SUM = data_use_cor_pick["SUM"]
+        SUM_mol = data_use_cor_mol_pick["SUM"]
         if iso_sort == 0:
             data_per = pd.DataFrame()
+            data_per_mol = pd.DataFrame()
             for i in range (0,len(isotope_list)):
                 data_per_i = data_use_cor_pick[isotope_list[i]]/SUM*100
                 data_per = pd.concat([data_per,data_per_i],axis=1)
+                data_per_mol_i = data_use_cor_mol_pick[isotope_list[i]]/SUM_mol*100
+                data_per_mol = pd.concat([data_per_mol,data_per_mol_i],axis=1)
             data_per.columns = isotope_list
+            data_per_mol.columns = isotope_list
             ele_x = ele_list
             print(data_per)
             print(isotope_list)
             print(isotope_list_sum)
         else:
             data_per = pd.DataFrame()
+            data_per_mol = pd.DataFrame()
             for i in range (0,len(iso_sort_list)):
                 data_per_i = data_use_cor_pick[iso_sort_list[i]]/SUM*100
                 data_per = pd.concat([data_per,data_per_i],axis=1)
+                data_per_mol_i = data_use_cor_mol_pick[iso_sort_list[i]]/SUM_mol*100
+                data_per_mol = pd.concat([data_per_mol,data_per_mol_i],axis=1)
             data_per.columns = iso_sort_list
+            data_per_mol.columns = iso_sort_list
             ele_x = ele_sort_list
             print(data_per)
             print(iso_sort_list)
@@ -388,6 +431,7 @@ def ele_comp_graph():
     
     if textBox3_1.get() == "":
         data_per_range = data_per
+        data_per_range_mol = data_per_mol
     else:
         range_ele = textBox3_1.get().split("+")
         range_ele_sa = list(set(range_ele)-set(ele_list))
@@ -415,12 +459,16 @@ def ele_comp_graph():
             if textBox3_2.get() == "0":
                 if textBox3_3.get() == "100":
                     data_per_range = data_per[(range_data_sum>0)&(range_data_sum<100)]
+                    data_per_range_mol = data_per_mol[(range_data_sum>0)&(range_data_sum<100)]
                 else:
                     data_per_range = data_per[(range_data_sum>0)&(range_data_sum<=tB3_3)]
+                    data_per_range_mol = data_per_mol[(range_data_sum>0)&(range_data_sum<=tB3_3)]
             elif textBox3_3.get() == "100":
                 data_per_range = data_per[(range_data_sum>=tB3_2)&(range_data_sum<100)]
+                data_per_range_mol = data_per_mol[(range_data_sum>=tB3_2)&(range_data_sum<100)]
             else:
                 data_per_range = data_per[(range_data_sum>=tB3_2)&(range_data_sum<=tB3_3)]
+                data_per_range_mol = data_per_mol[(range_data_sum>=tB3_2)&(range_data_sum<=tB3_3)]
     ax3.cla()
     plt.rcParams["font.family"] = graph_font
     ax3.spines['top'].set_color(color_axes)
@@ -429,24 +477,44 @@ def ele_comp_graph():
     ax3.spines['right'].set_color(color_axes)
     ax3.tick_params(colors=color_axes)
 
-    if bln1.get():
-        data_per_range = data_per_range.where(data_per_range>0.0001,np.nan)
-        for i in range(0,len(data_per_range)):
-            data_per_range_i = data_per_range.iloc[i].to_list()
-            xdata_i = ele_x
-            ydata_i = data_per_range_i
-            ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
-            ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
-            ax3.set_yscale("log")
-            ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+    if bln_m1.get():
+        if bln1.get():
+            data_per_range_mol = data_per_range_mol.where(data_per_range_mol>0.0001,np.nan)
+            for i in range(0,len(data_per_range_mol)):
+                data_per_range_mol_i = data_per_range_mol.iloc[i].to_list()
+                xdata_i = ele_x
+                ydata_i = data_per_range_mol_i
+                ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
+                ax3.set_yscale("log")
+                ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+        else:
+            for i in range(0,len(data_per_range)):
+                data_per_range_mol_i = data_per_range_mol.iloc[i].to_list()
+                xdata_i = ele_x
+                ydata_i = data_per_range_mol_i
+                ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+                ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
     else:
-        for i in range(0,len(data_per_range)):
-            data_per_range_i = data_per_range.iloc[i].to_list()
-            xdata_i = ele_x
-            ydata_i = data_per_range_i
-            ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
-            ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
-            ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
+        if bln1.get():
+            data_per_range = data_per_range.where(data_per_range>0.0001,np.nan)
+            for i in range(0,len(data_per_range)):
+                data_per_range_i = data_per_range.iloc[i].to_list()
+                xdata_i = ele_x
+                ydata_i = data_per_range_i
+                ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
+                ax3.set_yscale("log")
+                ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+        else:
+            for i in range(0,len(data_per_range)):
+                data_per_range_i = data_per_range.iloc[i].to_list()
+                xdata_i = ele_x
+                ydata_i = data_per_range_i
+                ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+                ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
     canvas3.draw()
 
 def onclick(event):
@@ -487,33 +555,44 @@ def onclick(event):
         ax3.spines['right'].set_color(color_axes)
         ax3.tick_params(colors=color_axes)
 
-        if bln1.get():
-            data_per_range = data_per_range.where(data_per_range>0.0001,np.nan)
-            for i in range(0,len(data_per_range)):
-                data_per_range_i = data_per_range.iloc[i].to_list()
-                xdata_i = ele_x
-                ydata_i = data_per_range_i
-                ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
-                ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
-                ax3.set_yscale("log")
-                ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
-            data_per_range_click = data_per_range.loc[click_NP_number].to_list()
-            xdata_click = ele_x
-            ydata_click = data_per_range_click
-            ax3.set_yscale("log")
-            ax3.plot(xdata_click,ydata_click,"o-",c="red",alpha=1)
+        if bln_m1.get():
+            if bln1.get():
+                data_per_range_mol = data_per_range_mol.where(data_per_range_mol>0.0001,np.nan)
+                for i in range(0,len(data_per_range_mol)):
+                    data_per_range_mol_i = data_per_range_mol.iloc[i].to_list()
+                    xdata_i = ele_x
+                    ydata_i = data_per_range_mol_i
+                    ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                    ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
+                    ax3.set_yscale("log")
+                    ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+            else:
+                for i in range(0,len(data_per_range)):
+                    data_per_range_mol_i = data_per_range_mol.iloc[i].to_list()
+                    xdata_i = ele_x
+                    ydata_i = data_per_range_mol_i
+                    ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+                    ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                    ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
         else:
-            for i in range(0,len(data_per_range)):
-                data_per_range_i = data_per_range.iloc[i].to_list()
-                xdata_i = ele_x
-                ydata_i = data_per_range_i
-                ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
-                ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
-                ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
-            data_per_range_click = data_per_range.loc[click_NP_number].to_list()
-            xdata_click = ele_x
-            ydata_click = data_per_range_click
-            ax3.plot(xdata_click,ydata_click,"o-",c="red",alpha=1)
+            if bln1.get():
+                data_per_range = data_per_range.where(data_per_range>0.0001,np.nan)
+                for i in range(0,len(data_per_range)):
+                    data_per_range_i = data_per_range.iloc[i].to_list()
+                    xdata_i = ele_x
+                    ydata_i = data_per_range_i
+                    ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                    ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
+                    ax3.set_yscale("log")
+                    ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+            else:
+                for i in range(0,len(data_per_range)):
+                    data_per_range_i = data_per_range.iloc[i].to_list()
+                    xdata_i = ele_x
+                    ydata_i = data_per_range_i
+                    ax3.plot(xdata_i,ydata_i,"o-",c=color_plot_1,alpha=alpha_plot_1)
+                    ax3.grid(axis="x",c="gray",lw=0.5,linestyle="--")
+                    ax3.set_ylabel("Concentration (%)",fontname=graph_font,color=color_axes,weight=weight_font)
         canvas3.draw()
     #except:
     #    messagebox.showerror('エラー','粒子の最小サイズの決定を行ってください') 
@@ -538,31 +617,32 @@ def ele_ratio_graph():
                 messagebox.showerror('エラー','分母を正しく入力してください')
             else:
                 num_data = pd.DataFrame()
+                num_data_mol = pd.DataFrame()
                 for i in range (0,len(num_list)):
                     num_n_i = ele_list.index(num_list[i])
-                    print(num_n_i)
                     num_iso_i = isotope_list[num_n_i]
-                    print(num_iso_i)
-                    print(data_cor_pick[num_iso_i])
                     num_data = pd.concat([num_data,data_cor_pick[num_iso_i]],axis=1)
+                    num_data_mol = pd.concat([num_data_mol,data_cor_mol_pick[num_iso_i]],axis=1)
                 print(num_data)
                 num_data_sum = np.sum(num_data,axis=1)
+                num_data_mol_sum = np.sum(num_data_mol,axis=1)
                 den_data = pd.DataFrame()
+                den_data_mol = pd.DataFrame()
                 for i in range (0,len(den_list)):
                     den_n_i = ele_list.index(den_list[i])
-                    print(den_n_i)
                     den_iso_i = isotope_list[den_n_i]
-                    print(den_iso_i)
-                    print(data_cor_pick[den_iso_i])
                     den_data = pd.concat([den_data,data_cor_pick[den_iso_i]],axis=1)
+                    den_data_mol = pd.concat([den_data_mol,data_cor_mol_pick[den_iso_i]],axis=1)
                 print(den_data)
                 den_data_sum = np.sum(den_data,axis=1)
-                print(num_data_sum)
-                print(den_data_sum)
+                den_data_mol_sum = np.sum(den_data_mol,axis=1)
                 num_den = num_data_sum/den_data_sum
+                num_den_mol = num_data_mol_sum/den_data_mol_sum
                 print(len(num_den))
+                print(len(num_den_mol))
                 num_den_index = list(range(0,len(num_den)))
                 num_den_list = num_den.to_list()
+                num_den_mol_list = num_den_mol.to_list()
 
                 ax4.cla()
                 plt.rcParams["font.family"] = graph_font
@@ -571,7 +651,10 @@ def ele_ratio_graph():
                 ax4.spines['left'].set_color(color_axes)
                 ax4.spines['right'].set_color(color_axes)
                 ax4.tick_params(colors=color_axes)
-                ax4.scatter(num_den_index,num_den_list,c=color_plot_2,alpha=alpha_plot_2,s=20)
+                if bln_m2.get():
+                    ax4.scatter(num_den_index,num_den_mol_list,c=color_plot_2,alpha=alpha_plot_2,s=size_plot)
+                else:
+                    ax4.scatter(num_den_index,num_den_list,c=color_plot_2,alpha=alpha_plot_2,s=size_plot)
                 ax4.set_ylabel("{}/{}".format(textBox4_1.get(),textBox5_1.get()),fontname=graph_font,color=color_axes,weight=weight_font)
                 ax4.set_xlabel("N",fontname=graph_font,color=color_axes,weight=weight_font)
                 canvas4.draw()
@@ -590,55 +673,55 @@ def ele_ratio_graph():
                 messagebox.showerror('エラー','分母を正しく入力してください')
             else:
                 num_data_1 = pd.DataFrame()
+                num_data_mol_1 = pd.DataFrame()
                 for i in range (0,len(num_list_1)):
                     num_n_1_i = ele_list.index(num_list_1[i])
-                    print(num_n_1_i)
                     num_iso_1_i = isotope_list[num_n_1_i]
-                    print(num_iso_1_i)
-                    print(data_cor_pick[num_iso_1_i])
                     num_data_1 = pd.concat([num_data_1,data_cor_pick[num_iso_1_i]],axis=1)
+                    num_data_mol_1 = pd.concat([num_data_mol_1,data_cor_mol_pick[num_iso_1_i]],axis=1)
                 print(num_data_1)
                 num_data_sum_1 = np.sum(num_data_1,axis=1)
+                num_data_mol_sum_1 = np.sum(num_data_mol_1,axis=1)
                 den_data_1 = pd.DataFrame()
+                den_data_mol_1 = pd.DataFrame()
                 for i in range (0,len(den_list_1)):
                     den_n_1_i = ele_list.index(den_list_1[i])
-                    print(den_n_1_i)
                     den_iso_1_i = isotope_list[den_n_1_i]
-                    print(den_iso_1_i)
-                    print(data_cor_pick[den_iso_1_i])
                     den_data_1 = pd.concat([den_data_1,data_cor_pick[den_iso_1_i]],axis=1)
+                    den_data_mol_1 = pd.concat([den_data_mol_1,data_cor_mol_pick[den_iso_1_i]],axis=1)
                 print(den_data_1)
                 den_data_sum_1 = np.sum(den_data_1,axis=1)
+                den_data_mol_sum_1 = np.sum(den_data_mol_1,axis=1)
                 num_data_2 = pd.DataFrame()
+                num_data_mol_2 = pd.DataFrame()
                 for i in range (0,len(num_list_2)):
                     num_n_2_i = ele_list.index(num_list_2[i])
-                    print(num_n_2_i)
                     num_iso_2_i = isotope_list[num_n_2_i]
-                    print(num_iso_2_i)
-                    print(data_cor_pick[num_iso_2_i])
                     num_data_2 = pd.concat([num_data_2,data_cor_pick[num_iso_2_i]],axis=1)
+                    num_data_mol_2 = pd.concat([num_data_mol_2,data_cor_mol_pick[num_iso_2_i]],axis=1)
                 print(num_data_2)
                 num_data_sum_2 = np.sum(num_data_2,axis=1)
+                num_data_mol_sum_2 = np.sum(num_data_mol_2,axis=1)
                 den_data_2 = pd.DataFrame()
+                den_data_mol_2 = pd.DataFrame()
                 for i in range (0,len(den_list_2)):
                     den_n_2_i = ele_list.index(den_list_2[i])
-                    print(den_n_2_i)
                     den_iso_2_i = isotope_list[den_n_2_i]
-                    print(den_iso_2_i)
-                    print(data_cor_pick[den_iso_2_i])
                     den_data_2 = pd.concat([den_data_2,data_cor_pick[den_iso_2_i]],axis=1)
+                    den_data_mol_2 = pd.concat([den_data_mol_2,data_cor_mol_pick[den_iso_2_i]],axis=1)
                 print(den_data_2)
                 den_data_sum_2 = np.sum(den_data_2,axis=1)
-                print(num_data_sum_1)
-                print(den_data_sum_1)
-                print(num_data_sum_2)
-                print(den_data_sum_2)
+                den_data_mol_sum_2 = np.sum(den_data_mol_2,axis=1)
                 num_den_1 = num_data_sum_1/den_data_sum_1
+                num_den_mol_1 = num_data_mol_sum_1/den_data_mol_sum_1
                 print(len(num_den_1))
                 num_den_2 = num_data_sum_2/den_data_sum_2
+                num_den_mol_2 = num_data_mol_sum_2/den_data_mol_sum_2
                 print(len(num_den_2))
                 num_den_list_1 = num_den_1.to_list()
+                num_den_mol_list_1 = num_den_mol_1.to_list()
                 num_den_list_2 = num_den_2.to_list()
+                num_den_mol_list_2 = num_den_mol_2.to_list()
 
                 ax4.cla()
                 plt.rcParams["font.family"] = graph_font
@@ -647,7 +730,10 @@ def ele_ratio_graph():
                 ax4.spines['left'].set_color(color_axes)
                 ax4.spines['right'].set_color(color_axes)
                 ax4.tick_params(colors=color_axes)
-                ax4.scatter(num_den_list_2,num_den_list_1,c=color_plot_2,alpha=alpha_plot_2,s=size_plot)
+                if bln_m2.get():
+                    ax4.scatter(num_den_mol_list_2,num_den_mol_list_1,c=color_plot_2,alpha=alpha_plot_2,s=size_plot)
+                else:
+                    ax4.scatter(num_den_list_2,num_den_list_1,c=color_plot_2,alpha=alpha_plot_2,s=size_plot)
                 ax4.set_ylabel("{}/{}".format(textBox4_1.get(),textBox5_1.get()),fontname=graph_font,color=color_axes,weight=weight_font)
                 ax4.set_xlabel("{}/{}".format(textBox4_2.get(),textBox5_2.get()),fontname=graph_font,color=color_axes,weight=weight_font)
                 canvas4.draw()
@@ -1208,11 +1294,11 @@ btn4.place(width=40,height=25,x=250,y=183)
 btn4 = tk.Button(root,text="データ決定",command=pick_data_ok,font=(label_font_jp,9))
 btn4.place(width=120,height=25,x=120,y=260)
 btn5 = tk.Button(root,text="グラフ表示",command=ele_comp_graph,font=(label_font_jp,9))
-btn5.place(width=80,height=25,x=240,y=389)
+btn5.place(width=80,height=25,x=240,y=418)
 btn6 = tk.Button(root,text="グラフ表示",command=ele_ratio_graph,font=(label_font_jp,9))
-btn6.place(width=80,height=25,x=240,y=536)
+btn6.place(width=80,height=25,x=240,y=573)
 btn7 = tk.Button(root,text="グラフ表示",command=ele_class_graph,font=(label_font_jp,9))
-btn7.place(width=80,height=25,x=240,y=880)
+btn7.place(width=80,height=25,x=240,y=900)
 
 label1 = tk.Label(root,text="ファイル",anchor=tk.CENTER,bg=color2,font=(label_font_jp,9))
 label1.place(width=80,height=20,x=28,y=35)
@@ -1223,53 +1309,53 @@ label3.place(width=80,height=20,x=58,y=185)
 label4 = tk.Label(root,text="元素組成",anchor=tk.CENTER,bg=color3,font=(label_font_jp,10))
 label4.place(width=66,height=16,x=22,y=326.2)
 label4_1 = tk.Label(root,text=":",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
-label4_1.place(width=10,height=16,x=75,y=390)
+label4_1.place(width=10,height=16,x=75,y=420)
 label4_2 = tk.Label(root,text="-",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
-label4_2.place(width=10,height=16,x=145,y=392)
+label4_2.place(width=10,height=16,x=145,y=422)
 label5 = tk.Label(root,text="元素比",anchor=tk.CENTER,bg=color4,font=(label_font_jp,10))
-label5.place(width=66,height=16,x=22,y=471.2)
+label5.place(width=66,height=16,x=22,y=481.2)
 label6_1 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label6_1.place(width=10,height=16,x=120,y=510)
+label6_1.place(width=10,height=16,x=120,y=540)
 label6_2 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label6_2.place(width=10,height=16,x=120,y=540)
+label6_2.place(width=10,height=16,x=120,y=570)
 label7 = tk.Label(root,text="組成分類",anchor=tk.CENTER,bg=color5,font=(label_font_jp,10))
-label7.place(width=66,height=16,x=22,y=618.2)
+label7.place(width=66,height=16,x=22,y=638.2)
 label8_1 = tk.Label(root,text="1.",anchor=tk.CENTER,bg=color1,font=(label_font_jp,10))
-label8_1.place(width=12,height=16,x=35,y=658)
+label8_1.place(width=12,height=16,x=35,y=678)
 label9_1 = tk.Label(root,text="(",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label9_1.place(width=10,height=16,x=130,y=658)
+label9_1.place(width=10,height=16,x=130,y=678)
 label10_1 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label10_1.place(width=10,height=16,x=225,y=658)
+label10_1.place(width=10,height=16,x=225,y=678)
 label11_1 = tk.Label(root,text=")",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label11_1.place(width=10,height=16,x=320,y=658)
+label11_1.place(width=10,height=16,x=320,y=678)
 label12_1 = tk.Label(root,text="→",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
-label12_1.place(width=12,height=16,x=52,y=687)
+label12_1.place(width=12,height=16,x=52,y=707)
 label13_1 = tk.Label(root,text="-",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
-label13_1.place(width=10,height=16,x=125,y=687)
+label13_1.place(width=10,height=16,x=125,y=707)
 label8_2 = tk.Label(root,text="2.",anchor=tk.CENTER,bg=color1,font=(label_font_jp,10))
-label8_2.place(width=12,height=16,x=35,y=738)
+label8_2.place(width=12,height=16,x=35,y=758)
 label9_2 = tk.Label(root,text="(",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label9_2.place(width=10,height=16,x=130,y=738)
+label9_2.place(width=10,height=16,x=130,y=758)
 label10_2 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label10_2.place(width=10,height=16,x=225,y=738)
+label10_2.place(width=10,height=16,x=225,y=758)
 label11_2 = tk.Label(root,text=")",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label11_2.place(width=10,height=16,x=320,y=738)
+label11_2.place(width=10,height=16,x=320,y=758)
 label12_2 = tk.Label(root,text="→",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
-label12_2.place(width=12,height=16,x=52,y=767)
+label12_2.place(width=12,height=16,x=52,y=787)
 label13_2 = tk.Label(root,text="-",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
-label13_2.place(width=10,height=16,x=125,y=767)
+label13_2.place(width=10,height=16,x=125,y=787)
 label8_3 = tk.Label(root,text="3.",anchor=tk.CENTER,bg=color1,font=(label_font_jp,10))
-label8_3.place(width=12,height=16,x=35,y=818)
+label8_3.place(width=12,height=16,x=35,y=838)
 label9_3 = tk.Label(root,text="(",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label9_3.place(width=10,height=16,x=130,y=818)
+label9_3.place(width=10,height=16,x=130,y=838)
 label10_3 = tk.Label(root,text="/",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label10_3.place(width=10,height=16,x=225,y=818)
+label10_3.place(width=10,height=16,x=225,y=838)
 label11_3 = tk.Label(root,text=")",anchor=tk.CENTER,bg=color1,font=(label_font_jp,13))
-label11_3.place(width=10,height=16,x=320,y=818)
+label11_3.place(width=10,height=16,x=320,y=838)
 label12_3 = tk.Label(root,text="→",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
-label12_3.place(width=12,height=16,x=52,y=847)
+label12_3.place(width=12,height=16,x=52,y=867)
 label13_3 = tk.Label(root,text="-",anchor=tk.CENTER,bg=color1,font=(label_font_jp,11))
-label13_3.place(width=10,height=16,x=125,y=847)
+label13_3.place(width=10,height=16,x=125,y=867)
 
 menubar = tk.Menu(root)
 root.config(menu = menubar)
